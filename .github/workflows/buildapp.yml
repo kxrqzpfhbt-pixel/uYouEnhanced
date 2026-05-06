@@ -6,10 +6,6 @@ name: Build and Release uYouEnhanced
 on:
   workflow_dispatch:
     inputs:
-      remove_extensions:
-        description: 'Remove extensions'
-        type: boolean
-        default: true
       sdk_version:
         description: "iOS SDK Version"
         default: "17.5"
@@ -132,13 +128,17 @@ jobs:
           cd ${{ github.workspace }}/main
           mv YouTube.ipa YouTube.zip
           unzip -q YouTube.zip
-          echo "==> Removing Extensions..."
+          
+          echo "==> Removing Extensions and Watch App..."
           rm -rf Payload/YouTube.app/PlugIns
           rm -rf Payload/YouTube.app/Watch
+          plutil -remove CFBundleSubset ${{ github.workspace }}/main/Payload/YouTube.app/Info.plist || true
+          
           youtube_version=$(defaults read "$(pwd)/Payload/YouTube.app/Info" CFBundleVersion)
           echo "==> YouTube v$youtube_version downloaded!"
           sed -i '' "17s#.*#YOUTUBE_VERSION = ${youtube_version}#g" Makefile
           echo "youtube_version=${youtube_version}" >> $GITHUB_OUTPUT
+
 
         env:
           THEOS: ${{ github.workspace }}/theos
