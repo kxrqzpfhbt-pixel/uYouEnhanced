@@ -69,6 +69,11 @@ jobs:
           path: main
           ref: ${{ github.event.inputs.commit_id || github.ref }}
           submodules: recursive
+          
+      - name: Force Remove Extensions
+        run: |
+          find . -name "PlugIns" -type d -exec rm -rf {} +
+          find . -name "Watch" -type d -exec rm -rf {} +
 
       - name: Install Dependencies
         run: brew install ldid dpkg make
