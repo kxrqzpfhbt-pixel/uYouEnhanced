@@ -70,11 +70,6 @@ jobs:
           ref: ${{ github.event.inputs.commit_id || github.ref }}
           submodules: recursive
           
-      - name: Force Remove Extensions
-        run: |
-          find . -name "PlugIns" -type d -exec rm -rf {} +
-          find . -name "Watch" -type d -exec rm -rf {} +
-
       - name: Install Dependencies
         run: brew install ldid dpkg make
 
@@ -137,6 +132,9 @@ jobs:
           cd ${{ github.workspace }}/main
           mv YouTube.ipa YouTube.zip
           unzip -q YouTube.zip
+          echo "==> Removing Extensions..."
+          rm -rf Payload/YouTube.app/PlugIns
+          rm -rf Payload/YouTube.app/Watch
           youtube_version=$(defaults read "$(pwd)/Payload/YouTube.app/Info" CFBundleVersion)
           echo "==> YouTube v$youtube_version downloaded!"
           sed -i '' "17s#.*#YOUTUBE_VERSION = ${youtube_version}#g" Makefile
