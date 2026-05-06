@@ -6,6 +6,10 @@ name: Build and Release uYouEnhanced
 on:
   workflow_dispatch:
     inputs:
+      remove_extensions:
+        description: 'Remove extensions'
+        type: boolean
+        default: true
       sdk_version:
         description: "iOS SDK Version"
         default: "17.5"
